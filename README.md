@@ -1,13 +1,13 @@
 ### Node Library
 
 #### Setup
-```
-var imessage = require('imessage');
-var m = new imessage();
+```javascript
+const imessage = require('imessage');
+const m = new imessage();
 ```
 
 #### Messages
-```
+```javascript
 // Get all messages
 m.getMessages(callback);
 
@@ -23,7 +23,7 @@ m.getMessagesFromRecipientWithId(1, "keyword", callback)
 
 #### Recipients
 
-```
+```javascript
 // get all contact recipients
 m.getRecipients(callback)
 
@@ -39,14 +39,14 @@ m.getRecipientMessagesByID(1, callback)
 
 #### Top Contacts
 
-```
+```javascript
 // get top 10 contacts from last 30 days and related info
 m.getTopContacts(10, 30, callback)
 ```
 
 ### Attachments
 
-```
+```javascript
 // Get all attachments
 m.getAllAttachments(callback)
 
