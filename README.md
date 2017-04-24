@@ -31,7 +31,7 @@ m.getMessagesFromRecipientWithID(1, "keyword")
 
 ```javascript
 // get all contact recipients
-m.getAllRecipients(callback)
+m.getAllRecipients()
 
 // Get recipients with handle "shelley"
 m.getRecipientByHandle("shelley")
