@@ -40,8 +40,8 @@ imessage.prototype = {
   getAllRecipients() {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all("SELECT * FROM 'handle'", (err, recipients) => {
-          if (err) reject(err)
+        db.all("SELECT * FROM handle", (err, recipients) => {
+          if (err) reject(err);
           resolve(recipients);
         });
       });
@@ -51,7 +51,7 @@ imessage.prototype = {
   getRecipientByHandle(handle) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all(`SELECT * FROM 'handle' WHERE id LIKE '%${handle}%'`, (err, recipient) => {
+        db.all(`SELECT * FROM handle WHERE id LIKE %${handle}%`, (err, recipient) => {
           if (err) reject(err);
           resolve(recipient);
         });
@@ -62,7 +62,7 @@ imessage.prototype = {
   getRecipientByID(id) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all(`SELECT * FROM 'handle' WHERE ROWID = ${id}`, (err, recipient) => {
+        db.all(`SELECT * FROM handle WHERE ROWID = ${id}`, (err, recipient) => {
           if (err) reject(err);
           resolve(recipient);
         });
@@ -74,10 +74,10 @@ imessage.prototype = {
     return new Promise((resolve, reject) => {
       let recipient = {};
       this.db.then((db) => {
-        db.get(`SELECT * FROM 'handle' WHERE ROWID = ${id}`, (err, ret) => {
+        db.get(`SELECT * FROM handle WHERE ROWID = ${id}`, (err, ret) => {
           if (err) reject(err);
           recipient = ret;
-          db.all(`SELECT * FROM 'message' WHERE handle_id = ${id}`, (error, messages) => {
+          db.all(`SELECT * FROM message WHERE handle_id = ${id}`, (error, messages) => {
             if (error) reject(error);
             recipient.messages = messages;
             resolve(recipient);
@@ -90,7 +90,7 @@ imessage.prototype = {
   getAllMessages() {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all("SELECT * FROM 'message'", (err, messages) => {
+        db.all("SELECT text FROM message", (err, messages) => {
           if (err) reject(err);
           resolve(messages);
         });
@@ -101,8 +101,8 @@ imessage.prototype = {
   getMessagesWithText(keywordText) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        const where = `WHERE 'message'.text LIKE '%${keywordText}%'`;
-        db.all(`SELECT * FROM 'message' ${where}`, (err, messages) => {
+        const where = `WHERE message.text LIKE %${keywordText}%`;
+        db.all(`SELECT * FROM message ${where}`, (err, messages) => {
           if (err) reject(err);
           resolve(messages);
         });
@@ -113,8 +113,8 @@ imessage.prototype = {
   getMessagesFromRecipientWithText(id, keywordText) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        const where = `AND text LIKE '%${keywordText}%'`;
-        db.all(`SELECT * FROM 'message' WHERE handle_id = ${id} ${where}`, (err, messages) => {
+        const where = `AND text LIKE %${keywordText}%`;
+        db.all(`SELECT * FROM message WHERE handle_id = ${id} ${where}`, (err, messages) => {
           if (err) reject(err);
           resolve(messages);
         });
@@ -125,11 +125,11 @@ imessage.prototype = {
   getAllAttachments() {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all(`SELECT * FROM 'message'
-          INNER JOIN 'message_attachment_join'
-          ON 'message'.ROWID = 'message_attachment_join'.message_id
-          INNER JOIN 'attachment'
-          ON 'attachment'.ROWID = 'message_attachment_join'.attachment_id`, (err, messages) => {
+        db.all(`SELECT * FROM message
+          INNER JOIN message_attachment_join
+          ON message.ROWID = message_attachment_join.message_id
+          INNER JOIN attachment
+          ON attachment.ROWID = message_attachment_join.attachment_id`, (err, messages) => {
           if (err) reject(err);
           resolve(messages);
         });
@@ -140,12 +140,12 @@ imessage.prototype = {
   getAttachmentsByID(id) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all(`SELECT * FROM 'message'
-          INNER JOIN 'message_attachment_join'
-          ON 'message'.ROWID = 'message_attachment_join'.message_id
-          INNER JOIN 'attachment'
-          ON 'attachment'.ROWID = 'message_attachment_join'.attachment_id \
-          WHERE 'message'.handle_id = ${id}`, (err, messages) => {
+        db.all(`SELECT * FROM message
+          INNER JOIN message_attachment_join
+          ON message.ROWID = message_attachment_join.message_id
+          INNER JOIN attachment
+          ON attachment.ROWID = message_attachment_join.attachment_id \
+          WHERE message.handle_id = ${id}`, (err, messages) => {
           if (err) reject(err);
           resolve(messages);
         });
