@@ -1,5 +1,7 @@
 ### Node Library
 
+This library allows you to query and chain commands to your local iMessage database.
+
 #### Setup
 ```javascript
 const imessage = require('imessage');

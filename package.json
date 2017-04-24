@@ -1,7 +1,7 @@
 {
-  "name": "imessage-lib",
+  "name": "nodemessage",
   "version": "0.0.1",
-  "description": "see your text statistics",
+  "description": "interact with your imessage database",
   "main": "index.js",
   "scripts": {
     "start" : "node bin/www"
