@@ -1,4 +1,4 @@
-### Node Library
+### NodeMessage
 
 This library allows you to query and chain commands to your local iMessage database.
 
@@ -8,7 +8,7 @@ This library allows you to query and chain commands to your local iMessage datab
 
 #### Setup
 ```javascript
-const imessage = require('imessage');
+const imessage = require('nodemessage');
 const m = new imessage();
 ```
 
@@ -63,13 +63,16 @@ m.getAttachmentsByID(1)
 #### Example
 
 ```javascript
-const imessage = require('imessage');
+const imessage = require('nodemessage');
 const m = new imessage();
 
-const attachments = getAllAttachments();
+const attachments = m.getAllAttachments();
 attachments.each((attachment) => {
   console.log(attach);
 });
 
 m.disconnect();
 ```
+
+### TODO
++ Add CLI
