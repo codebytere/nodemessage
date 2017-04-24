@@ -7,7 +7,6 @@ imessage.OSX_EPOCH = 978307200;
 imessage.DB_PATH = `${HOME}/Library/Messages/chat.db`;
 
 function imessage(options) {
-  // this.path = (options !== null) ? options.path : imessage.DB_PATH;
   this.path = imessage.DB_PATH;
   this.db = this.connect();
 }
@@ -36,7 +35,6 @@ imessage.prototype = {
   // get database
   getDB(callback) {
     this.db.then((db) => {
-      console.log(`db is ${db}`);
       callback(null, db);
     }, (err) => {
       callback(err);
