@@ -59,7 +59,7 @@ imessage.prototype = {
     });
   },
   // return all message recipients with specified id
-  getRecipientByID(id, callback) {
+  getRecipientByID(id) {
     let results;
     this.db.then((db) => {
       db.all(`SELECT * FROM 'handle' WHERE ROWID = ${id}`, (err, ret) => {
@@ -70,7 +70,7 @@ imessage.prototype = {
     });
   },
   // return all messages from recipient with specified id
-  getRecipientMessagesByID(id, callback) {
+  getRecipientMessagesByID(id) {
     let results;
     let recipient = {};
     this.db.then((db) => {
@@ -88,7 +88,7 @@ imessage.prototype = {
     });
   },
   // return all messages
-  getAllMessages(callback) {
+  getAllMessages() {
     let results;
     this.db.then((db) => {
       db.all("SELECT * FROM 'message'", (err, ret) => {
@@ -99,7 +99,7 @@ imessage.prototype = {
     });
   },
   // get messages containing specified text
-  getMessagesWithText(keywordText, callback) {
+  getMessagesWithText(keywordText) {
     let results;
     this.db.then((db) => {
       const where = `WHERE 'message'.text LIKE '%${keywordText}%'`;
@@ -111,7 +111,7 @@ imessage.prototype = {
     });
   },
   // Get messages from recipient ID
-  getMessagesFromRecipientWithText(id, keywordText, callback) {
+  getMessagesFromRecipientWithText(id, keywordText) {
     let results;
     this.db.then((db) => {
       const where = `AND text LIKE '%${keywordText}%'`;
@@ -123,7 +123,7 @@ imessage.prototype = {
     });
   },
   // get all attachments
-  getAllAttachments(callback) {
+  getAllAttachments() {
     let results;
     this.db.then((db) => {
       db.all(`SELECT * FROM 'message'
@@ -138,7 +138,7 @@ imessage.prototype = {
     });
   },
   // get attachments from specified id
-  getAttachmentsByID(id, callback) {
+  getAttachmentsByID(id) {
     let results;
     this.db.then((db) => {
       db.all(`SELECT * FROM 'message'
@@ -154,7 +154,7 @@ imessage.prototype = {
     });
   },
   // get top contacts from last specified days and limit
-  getTopContacts(limit, days, callback) {
+  getTopContacts(limit, days) {
     let results;
     const seconds = days * 86400;
     this.db.then((db) => {

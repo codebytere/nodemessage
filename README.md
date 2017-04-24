@@ -59,3 +59,17 @@ m.getAllAttachments()
 // Get attachments from recipient with ID 1
 m.getAttachmentsByID(1)
 ```
+
+#### Example
+
+```javascript
+const imessage = require('imessage');
+const m = new imessage();
+
+const attachments = getAllAttachments();
+attachments.each((attachment) => {
+  console.log(attach);
+});
+
+m.disconnect();
+```
