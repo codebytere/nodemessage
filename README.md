@@ -63,13 +63,12 @@ m.getAttachmentsByID(1)
 #### Example
 
 ```javascript
-const imessage = require('nodemessage');
+const imessage = require("./index.js");
 const m = new imessage();
 
-const attachments = m.getAllAttachments();
-attachments.each((attachment) => {
-  console.log(attach);
-});
+m.getAllMessages().then((messages) => {
+  console.log(messages);
+})
 
 m.disconnect();
 ```
