@@ -40,7 +40,9 @@ imessage.prototype = {
   getAllRecipients() {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all("SELECT * FROM handle", (err, recipients) => {
+        const query = "SELECT * FROM handle";
+
+        db.all(query, (err, recipients) => {
           if (err) reject(err);
           resolve(recipients);
         });
@@ -51,7 +53,11 @@ imessage.prototype = {
   getRecipientByHandle(handle) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all(`SELECT * FROM handle WHERE id LIKE %${handle}%`, (err, recipient) => {
+        const query = `SELECT *
+        FROM handle
+        WHERE id LIKE %${handle}%`;
+
+        db.all(query, (err, recipient) => {
           if (err) reject(err);
           resolve(recipient);
         });
@@ -62,7 +68,11 @@ imessage.prototype = {
   getRecipientByID(id) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all(`SELECT * FROM handle WHERE ROWID = ${id}`, (err, recipient) => {
+        const query = `SELECT *
+        FROM handle
+        WHERE ROWID = ${id}`;
+
+        db.all(query, (err, recipient) => {
           if (err) reject(err);
           resolve(recipient);
         });
@@ -74,10 +84,18 @@ imessage.prototype = {
     return new Promise((resolve, reject) => {
       let recipient = {};
       this.db.then((db) => {
-        db.get(`SELECT * FROM handle WHERE ROWID = ${id}`, (err, ret) => {
+        const recipientQuery = `SELECT *
+        FROM handle
+        WHERE ROWID = ${id}`;
+
+        db.get(recipientQuery, (err, ret) => {
           if (err) reject(err);
           recipient = ret;
-          db.all(`SELECT * FROM message WHERE handle_id = ${id}`, (error, messages) => {
+          const messagesQuery = `SELECT *
+          FROM message
+          WHERE handle_id = ${id}`;
+
+          db.all(messagesQuery, (error, messages) => {
             if (error) reject(error);
             recipient.messages = messages;
             resolve(recipient);
@@ -90,19 +108,24 @@ imessage.prototype = {
   getAllMessages() {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all("SELECT text FROM message", (err, messages) => {
+        const query = "SELECT text FROM message";
+
+        db.all(query, (err, messages) => {
           if (err) reject(err);
           resolve(messages);
         });
       });
     });
   },
-  // get messages containing specified text
+  // get messages containing specified text keyword
   getMessagesWithText(keywordText) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        const where = `WHERE message.text LIKE %${keywordText}%`;
-        db.all(`SELECT * FROM message ${where}`, (err, messages) => {
+        const query = `SELECT text
+        FROM message
+        WHERE text LIKE '%${keywordText}%'`;
+
+        db.all(query, (err, messages) => {
           if (err) reject(err);
           resolve(messages);
         });
@@ -113,8 +136,12 @@ imessage.prototype = {
   getMessagesFromRecipientWithText(id, keywordText) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        const where = `AND text LIKE %${keywordText}%`;
-        db.all(`SELECT * FROM message WHERE handle_id = ${id} ${where}`, (err, messages) => {
+        const query = `SELECT text
+        FROM message
+        WHERE handle_id = ${id}
+        AND text LIKE '%${keywordText}%'`;
+
+        db.all(query, (err, messages) => {
           if (err) reject(err);
           resolve(messages);
         });
@@ -125,11 +152,13 @@ imessage.prototype = {
   getAllAttachments() {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all(`SELECT * FROM message
+        const query = `SELECT * FROM message
           INNER JOIN message_attachment_join
           ON message.ROWID = message_attachment_join.message_id
           INNER JOIN attachment
-          ON attachment.ROWID = message_attachment_join.attachment_id`, (err, messages) => {
+          ON attachment.ROWID = message_attachment_join.attachment_id`;
+
+        db.all(query, (err, messages) => {
           if (err) reject(err);
           resolve(messages);
         });
@@ -140,12 +169,14 @@ imessage.prototype = {
   getAttachmentsByID(id) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.all(`SELECT * FROM message
+        const query = `SELECT * FROM message
           INNER JOIN message_attachment_join
           ON message.ROWID = message_attachment_join.message_id
           INNER JOIN attachment
           ON attachment.ROWID = message_attachment_join.attachment_id \
-          WHERE message.handle_id = ${id}`, (err, messages) => {
+          WHERE message.handle_id = ${id}`;
+
+        db.all(query, (err, messages) => {
           if (err) reject(err);
           resolve(messages);
         });
@@ -157,7 +188,7 @@ imessage.prototype = {
     const seconds = days * 86400;
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        db.get(`SELECT handle.id,
+        const query = `SELECT handle.id,
                 COUNT(*)                                 AS 'total msgs',
                 SUM(msg.is_from_me = 0)                  AS 'from them',
                 SUM(msg.is_from_me = 1)                  AS 'from me',
@@ -171,7 +202,9 @@ imessage.prototype = {
           )
           GROUP BY handle_id
           ORDER BY COUNT(*) DESC
-          LIMIT ${limit};`, (err, contacts) => {
+          LIMIT ${limit};`;
+
+        db.get(query, (err, contacts) => {
           if (err) reject(err);
           resolve(contacts);
         });
