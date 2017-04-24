@@ -20,9 +20,9 @@ imessage.prototype = {
         sqlite3.OPEN_READONLY,
         (err, res) => {
           if (err) {
-            return reject(err);
+            reject(err);
           }
-          return resolve(db);
+          resolve(db);
         });
     });
   },
@@ -33,104 +33,129 @@ imessage.prototype = {
     });
   },
   // get database
-  getDB(callback) {
-    this.db.then((db) => {
-      callback(null, db);
-    }, (err) => {
-      callback(err);
-    });
+  getDB() {
+    return this.db;
   },
   // return all message recipients
-  getAllRecipients(callback) {
+  getAllRecipients() {
+    let results;
     this.db.then((db) => {
-      db.all("SELECT * FROM 'handle'", callback);
+      db.all("SELECT * FROM 'handle'", (err, ret) => {
+        if (err) throw new Error(err);
+        results = ret;
+      });
+      return results;
     });
   },
   // return all message recipients with specified handle
-  getRecipientByHandle(handle, callback) {
+  getRecipientByHandle(handle) {
+    let results;
     this.db.then((db) => {
-      db.all(`SELECT * FROM 'handle' WHERE id LIKE '%${handle}%'`, callback);
+      db.all(`SELECT * FROM 'handle' WHERE id LIKE '%${handle}%'`, (err, ret) => {
+        if (err) throw new Error(err);
+        results = ret;
+      });
+      return results;
     });
   },
   // return all message recipients with specified id
   getRecipientByID(id, callback) {
+    let results;
     this.db.then((db) => {
-      db.all(`SELECT * FROM 'handle' WHERE ROWID = ${id}`, callback);
+      db.all(`SELECT * FROM 'handle' WHERE ROWID = ${id}`, (err, ret) => {
+        if (err) throw new Error(err);
+        results = ret;
+      });
+      return results;
     });
   },
   // return all messages from recipient with specified id
   getRecipientMessagesByID(id, callback) {
+    let results;
     let recipient = {};
     this.db.then((db) => {
       db.get(`SELECT * FROM 'handle' WHERE ROWID = ${id}`,
       (err, ret) => {
-        if (err) {
-          return callback(err);
-        }
+        if (err) throw new Error(err);
         recipient = ret;
-        db.all(`SELECT * FROM 'message' WHERE handle_id = ${id}`,
-        (error, messages) => {
-          if (error) {
-            return callback(err);
-          }
+        db.all(`SELECT * FROM 'message' WHERE handle_id = ${id}`, (error, messages) => {
+          if (error) throw new Error(error);
           recipient.messages = messages;
-          return callback(error, recipient);
+          results = recipient;
         });
       });
+      return results;
     });
   },
   // return all messages
   getAllMessages(callback) {
+    let results;
     this.db.then((db) => {
-      db.all("SELECT * FROM 'message'", callback);
+      db.all("SELECT * FROM 'message'", (err, ret) => {
+        if (err) throw new Error(err);
+        results = ret;
+      });
+      return results;
     });
   },
   // get messages containing specified text
   getMessagesWithText(keywordText, callback) {
+    let results;
     this.db.then((db) => {
       const where = `WHERE 'message'.text LIKE '%${keywordText}%'`;
-      db.all(`SELECT * FROM 'message' ${where}`, callback);
+      db.all(`SELECT * FROM 'message' ${where}`, (err, ret) => {
+        if (err) throw new Error(err);
+        results = ret;
+      });
+      return results;
     });
   },
   // Get messages from recipient ID
   getMessagesFromRecipientWithText(id, keywordText, callback) {
-    this.db.done((db) => {
+    let results;
+    this.db.then((db) => {
       const where = `AND text LIKE '%${keywordText}%'`;
-      db.all(`SELECT * FROM 'message' WHERE handle_id = ${id} ${where}`,
-      (err, messages) => {
-        callback(err, messages);
+      db.all(`SELECT * FROM 'message' WHERE handle_id = ${id} ${where}`, (err, messages) => {
+        if (err) throw new Error(err);
+        results = messages;
       });
+      return results;
     });
   },
   // get all attachments
   getAllAttachments(callback) {
+    let results;
     this.db.then((db) => {
       db.all(`SELECT * FROM 'message'
         INNER JOIN 'message_attachment_join'
         ON 'message'.ROWID = 'message_attachment_join'.message_id
         INNER JOIN 'attachment'
-        ON 'attachment'.ROWID = 'message_attachment_join'.attachment_id`,
-        (err, messages) => {
-          callback(err, messages);
-        });
+        ON 'attachment'.ROWID = 'message_attachment_join'.attachment_id`, (err, messages) => {
+        if (err) throw new Error(err);
+        results = messages;
+      });
+      return results;
     });
   },
   // get attachments from specified id
   getAttachmentsByID(id, callback) {
+    let results;
     this.db.then((db) => {
       db.all(`SELECT * FROM 'message'
         INNER JOIN 'message_attachment_join'
         ON 'message'.ROWID = 'message_attachment_join'.message_id
         INNER JOIN 'attachment'
         ON 'attachment'.ROWID = 'message_attachment_join'.attachment_id \
-        WHERE 'message'.handle_id = ${id}`,
-        (err, messages) => {
-          callback(err, messages);
-        });
+        WHERE 'message'.handle_id = ${id}`, (err, messages) => {
+        if (err) throw new Error(err);
+        results = messages;
+      });
+      return results;
     });
   },
   // get top contacts from last specified days and limit
   getTopContacts(limit, days, callback) {
+    let results;
     const seconds = days * 86400;
     this.db.then((db) => {
       db.get(`SELECT handle.id,
@@ -147,7 +172,11 @@ imessage.prototype = {
         )
         GROUP BY handle_id
         ORDER BY COUNT(*) DESC
-        LIMIT ${limit};`, callback);
+        LIMIT ${limit};`, (err, ret) => {
+        if (err) throw new Error(err);
+        results = ret;
+      });
+      return results;
     });
   },
 };
