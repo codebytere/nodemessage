@@ -61,7 +61,7 @@ imessage.prototype = {
     });
   },
   // return all messages from recipient with specified id
-  getRecipientMessagesById(id, callback) {
+  getRecipientMessagesByID(id, callback) {
     let recipient = {};
     this.db.then((db) => {
       db.get(`SELECT * FROM 'handle' WHERE ROWID = ${id}`,
@@ -118,7 +118,7 @@ imessage.prototype = {
     });
   },
   // get attachments from specified id
-  getAttachmentsById(id, callback) {
+  getAttachmentsByID(id, callback) {
     this.db.then((db) => {
       db.all(`SELECT * FROM 'message'
         INNER JOIN 'message_attachment_join'

@@ -9,29 +9,29 @@ const m = new imessage();
 #### Messages
 ```javascript
 // Get all messages
-m.getMessages(callback);
+m.getAllMessages(callback);
 
 // Get messages with keyword
 m.getMessagesWithText("keyword", callback);
 
 // Get messages from recipient ID
-m.getMessagesFromId(1, callback)
+m.getMessagesFromID(1, callback)
 
 // Get messages from recipient with specific keyword text
-m.getMessagesFromRecipientWithId(1, "keyword", callback)
+m.getMessagesFromRecipientWithID(1, "keyword", callback)
 ```
 
 #### Recipients
 
 ```javascript
 // get all contact recipients
-m.getRecipients(callback)
+m.getAllRecipients(callback)
 
 // Get recipients with handle "shelley"
-m.getRecipients("shelley", callback)
+m.getRecipientByHandle("shelley", callback)
 
 // Get recipient with ID 1
-m.getRecipientById(1, callback)
+m.getRecipientByID(1, callback)
 
 // Get recipient with ID 1 and all of their messages
 m.getRecipientMessagesByID(1, callback)
@@ -44,12 +44,12 @@ m.getRecipientMessagesByID(1, callback)
 m.getTopContacts(10, 30, callback)
 ```
 
-### Attachments
+#### Attachments
 
 ```javascript
 // Get all attachments
 m.getAllAttachments(callback)
 
 // Get attachments from recipient with ID 1
-m.getAttachmentsFromRecipientWithId(1, callback)
+m.getAttachmentsByID(1, callback)
 ```
