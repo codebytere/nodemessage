@@ -1,3 +1,5 @@
+[![Downloads][http://img.shields.io/npm/v/nodemessage.svg]][https://npmjs.org/package/nodemessage]
+
 ### NodeMessage
 
 This library allows you to query and chain commands to your local iMessage database.
