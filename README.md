@@ -1,10 +1,11 @@
 ### NodeMessage
 
 This library allows you to query and chain commands to your local iMessage database.
+All functions return promises.
 
 #### Install
 
-`npm install nodemessage`
+```npm install nodemessage``
 
 #### Setup
 ```javascript
@@ -63,7 +64,7 @@ m.getAttachmentsByID(1)
 #### Example
 
 ```javascript
-const imessage = require("./index.js");
+const imessage = require("nodemessage");
 const m = new imessage();
 
 m.getAllMessages().then((messages) => {
