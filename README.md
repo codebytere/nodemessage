@@ -1,4 +1,4 @@
-[![Downloads][http://img.shields.io/npm/v/nodemessage.svg]][https://npmjs.org/package/nodemessage]
+[![npm](https://img.shields.io/npm/dm/nodemessage.svg)](https://www.npmjs.com/package/nodemessage)
 
 ### NodeMessage
 
