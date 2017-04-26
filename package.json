@@ -1,6 +1,6 @@
 {
   "name": "nodemessage",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "interact with your imessage database",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "imessage",
     "node",
     "sql",
-    "database",
+    "database"
   ],
   "author": "Shelley Vohr",
   "license": "ISC",
