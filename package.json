@@ -6,6 +6,16 @@
   "scripts": {
     "start" : "node bin/www"
   },
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/codebytere/nodemessage.git"
+  },
+  "keywords" : [
+    "imessage",
+    "node",
+    "sql",
+    "database",
+  ],
   "author": "Shelley Vohr",
   "license": "ISC",
   "dependencies": {
