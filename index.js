@@ -1,17 +1,13 @@
-const sqlite3 = require("sqlite3").verbose();
 const homedir = require("homedir");
+const sqlite3 = require("sqlite3").verbose();
 
 const HOME = homedir();
 
-imessage.DATA_OFFSET = 978307200;
-imessage.DB_PATH = `${HOME}/Library/Messages/chat.db`;
-
-function imessage(options) {
-  this.path = imessage.DB_PATH;
-  this.db = this.connect();
-}
-
-imessage.prototype = {
+class imessage {
+  constructor() {
+    this.path = `${HOME}/Library/Messages/chat.db`;
+    this.db = this.connect();
+  }
   // open connection to the database
   connect() {
     return new Promise((resolve, reject) => {
@@ -25,17 +21,17 @@ imessage.prototype = {
           resolve(db);
         });
     });
-  },
+  }
   // close connection to the database
   disconnect() {
     this.db.then((db) => {
       db.close();
     });
-  },
+  }
   // get database
   getDB() {
     return this.db;
-  },
+  }
   // return all message recipients
   getAllRecipients() {
     return new Promise((resolve, reject) => {
@@ -48,7 +44,7 @@ imessage.prototype = {
         });
       });
     });
-  },
+  }
   // return all message recipients with specified handle
   getRecipientByHandle(handle) {
     return new Promise((resolve, reject) => {
@@ -63,8 +59,8 @@ imessage.prototype = {
         });
       });
     });
-  },
-  // return all message recipients with specified id
+  }
+  // return message recipient with specified id
   getRecipientByID(id) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
@@ -78,7 +74,7 @@ imessage.prototype = {
         });
       });
     });
-  },
+  }
   // return all messages from recipient with specified id
   getRecipientMessagesByID(id) {
     return new Promise((resolve, reject) => {
@@ -91,7 +87,7 @@ imessage.prototype = {
         db.get(recipientQuery, (err, ret) => {
           if (err) reject(err);
           recipient = ret;
-          const messagesQuery = `SELECT *
+          const messagesQuery = `SELECT text
           FROM message
           WHERE handle_id = ${id}`;
 
@@ -103,7 +99,7 @@ imessage.prototype = {
         });
       });
     });
-  },
+  }
   // return all messages
   getAllMessages() {
     return new Promise((resolve, reject) => {
@@ -116,7 +112,7 @@ imessage.prototype = {
         });
       });
     });
-  },
+  }
   // get messages containing specified text keyword
   getMessagesWithText(keywordText) {
     return new Promise((resolve, reject) => {
@@ -131,7 +127,7 @@ imessage.prototype = {
         });
       });
     });
-  },
+  }
   // Get messages from recipient ID
   getMessagesFromRecipientWithText(id, keywordText) {
     return new Promise((resolve, reject) => {
@@ -147,7 +143,7 @@ imessage.prototype = {
         });
       });
     });
-  },
+  }
   // get all attachments
   getAllAttachments() {
     return new Promise((resolve, reject) => {
@@ -164,7 +160,7 @@ imessage.prototype = {
         });
       });
     });
-  },
+  }
   // get attachments from specified id
   getAttachmentsByID(id) {
     return new Promise((resolve, reject) => {
@@ -182,7 +178,7 @@ imessage.prototype = {
         });
       });
     });
-  },
+  }
   // get top contacts from last specified days and limit
   getTopContacts(limit, days) {
     const seconds = days * 86400;
@@ -210,7 +206,7 @@ imessage.prototype = {
         });
       });
     });
-  },
-};
+  }
+}
 
 module.exports = imessage;

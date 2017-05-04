@@ -5,7 +5,7 @@ All functions return promises.
 
 #### Install
 
-```npm install nodemessage``
+```npm install nodemessage```
 
 #### Setup
 ```javascript
