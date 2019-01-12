@@ -11,17 +11,17 @@ All functions return promises.
 
 #### Setup
 ```javascript
-const imessage = require('nodemessage');
-const m = new imessage();
+const imessage = require('nodemessage')
+const m = new imessage()
 ```
 
 #### Messages
 ```javascript
 // Get all messages
-m.getAllMessages();
+m.getAllMessages()
 
 // Get messages with keyword
-m.getMessagesWithText("keyword");
+m.getMessagesWithText("keyword")
 
 // Get messages from recipient ID
 m.getMessagesFromID(1)
@@ -66,15 +66,12 @@ m.getAttachmentsByID(1)
 #### Example
 
 ```javascript
-const imessage = require("nodemessage");
-const m = new imessage();
+const imessage = require("nodemessage")
+const m = new imessage()
 
-m.getAllMessages().then((messages) => {
-  console.log(messages);
+m.getAllMessages().then(messages => {
+  console.log(messages)
 })
 
-m.disconnect();
+m.disconnect()
 ```
-
-### TODO
-+ Add CLI
