@@ -1,5 +1,6 @@
 const homedir = require('homedir')
 const sqlite3 = require('sqlite3').verbose()
+const { formattedTime } = require('./utils')
 
 const HOME = homedir()
 
@@ -8,6 +9,7 @@ class imessage {
     this.path = `${HOME}/Library/Messages/chat.db`
     this.db = this.connect()
   }
+
   // open connection to the database
   connect () {
     return new Promise((resolve, reject) => {
@@ -15,23 +17,24 @@ class imessage {
         this.path,
         sqlite3.OPEN_READONLY,
         (err, res) => {
-          if (err) {
-            reject(err)
-          }
+          if (err) reject(err)
           resolve(db)
         })
     })
   }
+
   // close connection to the database
   disconnect () {
     this.db.then((db) => {
       db.close()
     })
   }
+
   // get database
   getDB () {
     return this.db
   }
+
   // return all message recipients
   getAllRecipients () {
     return new Promise((resolve, reject) => {
@@ -45,13 +48,14 @@ class imessage {
       })
     })
   }
+
   // return all message recipients with specified handle
-  getRecipientByHandle (handle) {
+  getRecipientByNumber (number) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
         const query = `SELECT *
         FROM handle
-        WHERE id LIKE %${handle}%`
+        WHERE id = '${number}'`
 
         db.all(query, (err, recipient) => {
           if (err) reject(err)
@@ -60,6 +64,7 @@ class imessage {
       })
     })
   }
+
   // return message recipient with specified id
   getRecipientByID (id) {
     return new Promise((resolve, reject) => {
@@ -75,6 +80,7 @@ class imessage {
       })
     })
   }
+
   // return all messages from recipient with specified id
   getRecipientMessagesByID (id) {
     return new Promise((resolve, reject) => {
@@ -100,6 +106,7 @@ class imessage {
       })
     })
   }
+
   // return all messages
   getAllMessages () {
     return new Promise((resolve, reject) => {
@@ -113,6 +120,7 @@ class imessage {
       })
     })
   }
+
   // get messages containing specified text keyword
   getMessagesWithText (keywordText) {
     return new Promise((resolve, reject) => {
@@ -128,6 +136,7 @@ class imessage {
       })
     })
   }
+
   // Get messages from recipient ID
   getMessagesFromRecipientWithText (id, keywordText) {
     return new Promise((resolve, reject) => {
@@ -144,6 +153,7 @@ class imessage {
       })
     })
   }
+
   // get all attachments
   getAllAttachments () {
     return new Promise((resolve, reject) => {
@@ -161,6 +171,40 @@ class imessage {
       })
     })
   }
+
+  // get communications for a given number
+  getAllForNumber (handle, options = {
+    filters: ['*']
+  }) {
+    return new Promise((resolve, reject) => {
+      this.db.then(db => {
+        const query = `
+          SELECT ${options.filters.join(', ')}
+            FROM chat
+          INNER JOIN handle 
+            ON chat.chat_identifier = handle.id
+          INNER JOIN chat_handle_join 
+            ON  handle.ROWID= chat_handle_join.handle_id 
+          INNER JOIN message
+            ON message.handle_id = chat_handle_join.handle_id
+              WHERE chat_identifier = '${handle}' 
+                AND length(message.text) > 0
+                AND message.is_from_me = 0`
+        
+        db.all(query, (err, messages) => {
+          if (err) reject(err)
+          messages = messages.map(m => {
+            // format dates if they were queried
+            if (m.date_read) m.date_read = formattedTime(m.date_read)
+            if (m.date) m.date = formattedTime(m.date)
+            return m
+          })
+          resolve(messages)
+        })
+      })
+    })
+  }
+
   // get attachments from specified id
   getAttachmentsByID (id) {
     return new Promise((resolve, reject) => {
@@ -175,34 +219,6 @@ class imessage {
         db.all(query, (err, messages) => {
           if (err) reject(err)
           resolve(messages)
-        })
-      })
-    })
-  }
-  // get top contacts from last specified days and limit
-  getTopContacts (limit, days) {
-    const seconds = days * 86400
-    return new Promise((resolve, reject) => {
-      this.db.then((db) => {
-        const query = `SELECT handle.id,
-                COUNT(*)                                 AS 'total msgs',
-                SUM(msg.is_from_me = 0)                  AS 'from them',
-                SUM(msg.is_from_me = 1)                  AS 'from me',
-                SUM(msg.is_from_me = 1)*100 / COUNT(*)   AS 'my percentage'
-           FROM message AS msg
-                INNER JOIN handle
-                        ON msg.handle_id = handle.ROWID
-          WHERE msg.service = 'iMessage'
-          AND (
-            (strftime('%s','now') - strftime('%s','2001-01-01')) - msg.date < ${seconds}
-          )
-          GROUP BY handle_id
-          ORDER BY COUNT(*) DESC
-          LIMIT ${limit}`
-
-        db.get(query, (err, contacts) => {
-          if (err) reject(err)
-          resolve(contacts)
         })
       })
     })
