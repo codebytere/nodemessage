@@ -53,9 +53,10 @@ class imessage {
   getRecipientByNumber (number) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        const query = `SELECT *
-        FROM handle
-        WHERE id = '${number}'`
+        const query = `
+          SELECT *
+            FROM handle
+            WHERE id = '${number}'`
 
         db.all(query, (err, recipient) => {
           if (err) reject(err)
@@ -69,9 +70,10 @@ class imessage {
   getRecipientByID (id) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        const query = `SELECT *
-        FROM handle
-        WHERE ROWID = ${id}`
+        const query = `
+          SELECT *
+            FROM handle
+            WHERE ROWID = ${id}`
 
         db.all(query, (err, recipient) => {
           if (err) reject(err)
@@ -86,16 +88,18 @@ class imessage {
     return new Promise((resolve, reject) => {
       let recipient = {}
       this.db.then((db) => {
-        const recipientQuery = `SELECT *
-        FROM handle
-        WHERE ROWID = ${id}`
+        const recipientQuery = `
+          SELECT *
+            FROM handle
+            WHERE ROWID = ${id}`
 
         db.get(recipientQuery, (err, ret) => {
           if (err) reject(err)
           recipient = ret
-          const messagesQuery = `SELECT text
-          FROM message
-          WHERE handle_id = ${id}`
+          const messagesQuery = `
+            SELECT text
+              FROM message
+              WHERE handle_id = ${id}`
 
           db.all(messagesQuery, (error, messages) => {
             if (error) reject(error)
@@ -125,9 +129,10 @@ class imessage {
   getMessagesWithText (keywordText) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        const query = `SELECT text
-        FROM message
-        WHERE text LIKE '%${keywordText}%'`
+        const query = `
+          SELECT text
+            FROM message
+            WHERE text LIKE '%${keywordText}%'`
 
         db.all(query, (err, messages) => {
           if (err) reject(err)
@@ -141,10 +146,11 @@ class imessage {
   getMessagesFromRecipientWithText (id, keywordText) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        const query = `SELECT text
-        FROM message
-        WHERE handle_id = ${id}
-        AND text LIKE '%${keywordText}%'`
+        const query = `
+          SELECT text
+            FROM message
+            WHERE handle_id = ${id}
+            AND text LIKE '%${keywordText}%'`
 
         db.all(query, (err, messages) => {
           if (err) reject(err)
@@ -158,15 +164,17 @@ class imessage {
   getAllAttachments () {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        const query = `SELECT * FROM message
+        const query = `
+          SELECT *
+            FROM message
           INNER JOIN message_attachment_join
-          ON message.ROWID = message_attachment_join.message_id
+            ON message.ROWID = message_attachment_join.message_id
           INNER JOIN attachment
-          ON attachment.ROWID = message_attachment_join.attachment_id`
+            ON attachment.ROWID = message_attachment_join.attachment_id`
 
-        db.all(query, (err, messages) => {
+        db.all(query, (err, attachments) => {
           if (err) reject(err)
-          resolve(messages)
+          resolve(attachments)
         })
       })
     })
@@ -188,8 +196,7 @@ class imessage {
           INNER JOIN message
             ON message.handle_id = chat_handle_join.handle_id
               WHERE chat_identifier = '${handle}' 
-                AND length(message.text) > 0
-                AND message.is_from_me = 0`
+                AND length(message.text) > 0`
         
         db.all(query, (err, messages) => {
           if (err) reject(err)
@@ -206,19 +213,21 @@ class imessage {
   }
 
   // get attachments from specified id
-  getAttachmentsByID (id) {
+  getAttachmentsForID (id) {
     return new Promise((resolve, reject) => {
       this.db.then((db) => {
-        const query = `SELECT * FROM message
+        const query = `
+          SELECT *
+            FROM message
           INNER JOIN message_attachment_join
-          ON message.ROWID = message_attachment_join.message_id
+            ON message.ROWID = message_attachment_join.message_id
           INNER JOIN attachment
-          ON attachment.ROWID = message_attachment_join.attachment_id \
+            ON attachment.ROWID = message_attachment_join.attachment_id \
           WHERE message.handle_id = ${id}`
 
-        db.all(query, (err, messages) => {
+        db.all(query, (err, attachments) => {
           if (err) reject(err)
-          resolve(messages)
+          resolve(attachments)
         })
       })
     })
